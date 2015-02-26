@@ -19,18 +19,18 @@ liferayThemeAdapter.prototype = _.merge(
 	}
 );
 
-var runGenerator = function(generator, path, data) {
+var runGenerator = function(generator, directory, data) {
 	var env = Environment.createEnv(null, null, new liferayThemeAdapter(data));
 
 	env.register(generatorLiferayTheme);
 
 	try {
-		process.chdir(path);
+		process.chdir(directory);
 
 		env.run(generator);
 	}
 	catch (err) {
-		console.log(chalk.red(path + ': does not exist! Please choose a valid directory.'));
+		console.log(chalk.red(directory + ': does not exist! Please choose a valid directory.'));
 
 		console.log(err.stack);
 	}

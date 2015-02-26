@@ -19,7 +19,7 @@ liferayThemeAdapter.prototype = _.merge(
 	}
 );
 
-var runGenerator = function(generator, directory, data) {
+var runGenerator = function(generator, directory, data, done) {
 	var env = Environment.createEnv(null, null, new liferayThemeAdapter(data));
 
 	env.register(generatorLiferayTheme);
@@ -27,7 +27,13 @@ var runGenerator = function(generator, directory, data) {
 	try {
 		process.chdir(directory);
 
-		env.run(generator);
+		env.run(
+			generator,
+			{
+				'skip-install': true
+			},
+			done
+		);
 	}
 	catch (err) {
 		console.log(chalk.red(directory + ': does not exist! Please choose a valid directory.'));

@@ -7,14 +7,14 @@ var TerminalAdapter = require('./node_modules/yeoman-environment/lib/adapter');
 
 var generatorLiferayTheme = path.resolve('./node_modules/generator-liferay-theme');
 
-function installDependencies(done) {
+function installDependencies(cb) {
 	var bowerInstall = spawnInstallCommand('bower');
 	var npmInstall = spawnInstallCommand('npm');
 
-	onProcessClose([bowerInstall, npmInstall], done);
+	onProcessClose([bowerInstall, npmInstall], cb);
 }
 
-function onProcessClose(commands, done) {
+function onProcessClose(commands, cb) {
 	var closed = 0;
 
 	_.forEach(
@@ -26,9 +26,7 @@ function onProcessClose(commands, done) {
 					closed++;
 
 					if (closed >= commands.length) {
-						console.log('child process exited with code ' + code);
-
-						done();
+						cb();
 					}
 				}
 			);
@@ -69,8 +67,10 @@ liferayThemeAdapter.prototype = _.merge(
 	}
 );
 
-var runGenerator = function(generator, directory, data, done) {
-	var env = Environment.createEnv(null, null, new liferayThemeAdapter(data));
+var runGenerator = function(config) {
+	var directory = config.directory;
+
+	var env = Environment.createEnv(null, null, new liferayThemeAdapter(config.promptData));
 
 	env.register(generatorLiferayTheme);
 
@@ -78,12 +78,12 @@ var runGenerator = function(generator, directory, data, done) {
 		process.chdir(directory);
 
 		env.run(
-			generator,
+			config.generator,
 			{
 				'skip-install': true
 			},
 			function() {
-				installDependencies(done);
+				installDependencies(config.cb);
 			}
 		);
 	}

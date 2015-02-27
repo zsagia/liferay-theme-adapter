@@ -5,7 +5,7 @@ var path = require('path');
 var spawn = require('child_process').spawn
 var TerminalAdapter = require('./node_modules/yeoman-environment/lib/adapter');
 
-var generatorLiferayTheme = path.resolve('./node_modules/generator-liferay-theme');
+var generatorLiferayTheme = path.join(__dirname, 'node_modules/generator-liferay-theme');
 
 function installDependencies(cb) {
 	var bowerInstall = spawnInstallCommand('bower');
@@ -26,7 +26,9 @@ function onProcessClose(commands, cb) {
 					closed++;
 
 					if (closed >= commands.length) {
-						cb();
+						if (cb) {
+							cb();
+						}
 					}
 				}
 			);
